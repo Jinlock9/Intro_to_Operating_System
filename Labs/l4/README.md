@@ -15,7 +15,7 @@
 
 2. db.csv
 
-    `git log --pretty="%H,%aN,%s" > db.csv`
+    `git log --pretty="%H,%aN,%s" > db.csv` 
 
 ### 1.2 Database system installation
 
