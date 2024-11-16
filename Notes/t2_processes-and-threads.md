@@ -202,6 +202,33 @@ Upon an interrupt, the running process must be paused:
 - **Zombie Process**: Child terminates but remains in the process table until the parent collects its exit status.
 
 ---
+
+### [ Interview 3 ] Can processes ignore signals?
+Processes can ignore certain signals, but there are exceptions. The ability to ignore signals depends on the signal type and the handling configuration set by the process.
+
+#### Signals a Process Can Ignore  
+- Most signals can be ignored by setting their signal handler to `SIG_IGN` using the `signal()` or `sigaction()` system calls.
+
+- Example:
+
+    ```C
+    signal(SIGINT, SIG_IGN); // Ignore Ctrl+C (SIGINT)
+    ```
+
+- Signals like `SIGINT` (interrupt) and `SIGHUP` (hangup) are often ignored by background processes to prevent unintended interruptions.
+
+#### Signals a Process Cannot Ignore
+
+- `SIGKILL`: This signal forcefully terminates the process and cannot be caught, blocked, or ignored. It is used to ensure a process terminates.
+
+- `SIGSTOP`: This signal pauses a process and also cannot be caught, blocked, or ignored. It ensures the process halts temporarily.
+
+#### When Ignoring Signals is Useful
+- Ignoring signals can be useful in scenarios like:
+    - Long-running or critical background tasks where interruptions are not desired.
+    - Child processes handling signals separately from the parent process.
+    
+---
 ---
 
 ## Threads
