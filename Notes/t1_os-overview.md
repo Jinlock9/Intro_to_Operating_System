@@ -8,6 +8,9 @@
     - Hide complicated details to the end user
     - Provide abstractions to ease interactions with the hardware.
 
+---
+---
+
 ## Hardware
 ### Basic PC hardware
 A computer is often composed of:
@@ -17,6 +20,8 @@ A computer is often composed of:
 - Keyboard + keyboard controller
 - Hard Disk Drive (HDD) + hard disk controller
 - Bus
+
+---
 
 ### Multi-threading
 * Real multi-threading:
@@ -28,6 +33,8 @@ A computer is often composed of:
     - Some resources are duplicated in each physical core
     - Hyper-threading allows a better utilization of the CPU
 
+---
+
 ### Memory
 ![Access time & Capacity](img/t1_2.png)
 * Memory types:
@@ -37,8 +44,9 @@ A computer is often composed of:
     - CMOS: save time and date, BIOS parameters
     - HDD: divided into cylinder, track and sector
 
-### INTERVIEW [1]
-**Explain the difference between the *stack* and the *heap*.**
+---
+
+### [ Interview 1 ] Explain the difference between the *stack* and the *heap*
 - *stack*:  
 
         The stack is used to store the order of method execution and local variables.
@@ -46,6 +54,8 @@ A computer is often composed of:
 - *heap*:
 
         The heap memory stores the objects and it uses dynamic memeory allocation and deallocation.
+
+---
 
 ### KEY Points
 1. What is the main job of an OS?
@@ -74,6 +84,9 @@ A computer is often composed of:
 - **Device Drivers**: Interface between hardware and the OS.
 - **User Interface**: Provides command-line or graphical interfaces for user interaction.
 
+---
+---
+
 ## Basic Concepts
 ### Main categories
 Five major components of an OS:
@@ -82,6 +95,8 @@ Five major components of an OS:
 3. File system: store persistent data
 4. Input-Output (IO): allows to interface with hardware
 5. Protection and Security: keep the system safe
+
+---
 
 ### System Calls
 ![System calls](img/t1_3.png)
@@ -112,6 +127,8 @@ Partial list of common Unix system calls:
     - `sec = time(*t)`
     - `s = kill(pid, signal)`
 
+---
+
 ### Processes
 A process holds all the necessary information to run a program:
 
@@ -127,6 +144,8 @@ A process holds all the necessary information to run a program:
     - List of related processes
     - Any other information required by the program
 
+---
+
 ### File system
 The OS hides peculiarities of the disk and other IO devices.
 - Data stored in files grouped into directories
@@ -137,6 +156,8 @@ The OS hides peculiarities of the disk and other IO devices.
 - Block files: for storage devices such as disks
 - Character files: for devices accepting or outputting character streams
 - Pipe: pseudo file used to connect two processes
+
+---
 
 ### Busy Waiting
 **Busy waiting** is a synchronization method where a process continuously checks for a condition to be true (e.g., waiting for a resource to become available) without performing any other tasks. This result in the CPU being actively used, even though the process isn't making meaningfule progress, leading to inefficiency.
@@ -158,6 +179,8 @@ The OS hides peculiarities of the disk and other IO devices.
 - **Inefficient resource use**: Other processes may not get CPU time.
 - **Not scalable**: Increases system load in multi-process scenarios.
 
+---
+
 ### Interrupts
 An **interrupt** in an Operating System (OS) is a signal sent to the CPU by hardware or software indicating that an event needs immediate attention. Interrupts temporarily halt the current execution flow, allowing the CPU to address the event, after which it resumes its previous activity.
 
@@ -173,7 +196,9 @@ An **interrupt** in an Operating System (OS) is a signal sent to the CPU by hard
     - System call: switch to kernel mode to run privileged instruction
 
 *Operating Systems are almost always interrupt driven*
-    
+
+---
+
 ### Direct Memory Access
 **Direct Memory Access (DMA)** is a feature in computer systems that allows hardware devices to directly transfer data to or from memory without involving the CPU for each data transaction.
 
@@ -185,6 +210,8 @@ Direct Memory Access (DMA):
 - Issue a single interrupt per block, instead of one per byte
 
 ![Communications](img/t1_4.png)
+
+---
 
 ### Protection and Security
 * CPU:
@@ -203,14 +230,16 @@ Direct Memory Access (DMA):
     - They are all privilege instructions
     - Ths OS processes them to ensure their correctness and legality
 
+---
+
 ### KEY Point
 1. What are system calls?
 
         System calls are functions provided by the OS that allow user-level applications to request services, such as file operations, process control, or communication with hardware. They provide a controlled way to interact with hardware and system resources.
 
-### INTERVIEW [2]
-**What's the difference between user space and kernel space?**
+---
 
+### [ Interview 2 ] What's the difference between user space and kernel space?
 The **user space**  and **kernel space**  are two distinct areas of memory in an operating system, used to separate application execution from core system operations.
 
 **User Space**  
