@@ -468,3 +468,27 @@ mutex-unlock:
     - Only one process can be active within a monitor at a time.
     - A monitor can be seen as a "special type of class"
     - Process can be blocked and awaken based on condition variables and `wait` and `signal` functions.
+
+## KEY POTINTS
+### Why is the thread communication essential?
+**Thread communication** is essential in multi-threaded programs because threads often need to **coordinate** their actions or **share data** to achieve a common goal.
+
+### What is a critical region?
+A **critical region** (also called a **critical section**) is a part of a program where a thread or process accesses shared resources, such as shared memory, variables, or files. To ensure the consistency and correctness of the shared resource, **only one thread or process is allowed to execute within the critical region at a time**.
+
+### Do software solutions exist?
+1. Peterson's Algorithm:
+    - Works for **two processes**.
+    - Uses two shared varaibles (`flag` and `turn`) to coordinate access.
+    - Ensures mutual exclusion, fairness, and no busy waiting.
+2. Dekker's Algorithm:
+    - One of the earliest solutions for **two processes**.
+    - Alternates access to the critical region.
+    - Ensures mutual exclusion and avoids deadlock.
+3. Lamport's Bakery Algorithm:
+    - Extends mutual exclusion to **multiple processes**.
+    - Uses a "ticket system" to determine the order of access.
+    - Fair and scalable for small numbers of processes.
+
+### What are the two best and most common solution?
+**Mutex** and **Semaphore**.
