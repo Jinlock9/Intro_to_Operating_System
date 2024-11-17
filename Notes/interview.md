@@ -171,3 +171,16 @@ Processes can ignore certain signals, but there are exceptions. The ability to i
 
 #### **Key Considerations**
 - Context switching is critical for multitasking but should be optimized to balance responsiveness and system performance.
+
+
+What's the difference between user space and kernel space?
+What's the difference between stacks and heaps?
+What are the possible states of a process?
+What's an orphan process? What about zombie process?
+Can processes ignore signals?
+List some common scheduling algorithms.
+Talk about context change.
+What are the primary means of inter-process communication (IPC)?
+What are the differences between processes, threads and coroutines?
+What are the prerequisites for a deadlock to happen?
+How to prevent deadlocks?
