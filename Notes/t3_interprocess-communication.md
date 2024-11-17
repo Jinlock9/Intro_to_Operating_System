@@ -338,6 +338,18 @@ Using semaphores to hide interrupts:
 - The interrupt handler processes the interrupt and applies an `up`
 - The process becomes ready
 
+### How can semaphore achieve *no busy waiting*?
+Semaphore can achieve **no busy waiting** by using a mechanism where a thread **blocks** itself (is put to sleep) when it cannot proceed, rather than continuously checking the semaphore value in a loop. This ensures that the thread does not waste CPU cycles while waiting for a resource or condition.
+
+#### More in detail
+1. Blocking instead of Spinning:
+    - When a thread calls `down()` on a semaphore:
+        - If the semaphore value is greater than 0, the thread decrements the value and proceeds.
+        - If the semaphore value is 0 or less, the thread is **blocked** (put to sleep) and added to a waiting queue until the semaphore becomes available.
+2. Waking Up Sleeping Threads:
+    - When a thread calls `up()`, it increments the semaphore value.
+    - If there are any threads waiting on the semaphore, one of them is **woken up** and allowed to proceed.
+
 ### Mutex
 A **mutex** is a semaphore taking values `0 (unlocked)` or `1 (locked)`.  
 
@@ -382,3 +394,77 @@ mutex-unlock:
 - *Improves Efficiency*: Reduces CPU usage by allowing other threads to execute.
 - *Ensures Fairness*: Gives other threads a chance to progress, reducing thread starvation.
 - *Better Utilization*: Helps avoid unnecessary spinning and allows threads to be rescheduled when the lock becomes available.
+
+## More solutions
+### Consumer-producer problem
+```C
+ 1  mutex mut = 0; semaphore empty = 100; semaphore full = 0;
+ 2  void producer() {
+ 3      while(TRUE){
+ 4          item = produce_item();
+ 5          mutex-lock(&mut);
+ 6          down(&empty); insert_item(item);
+ 7          mutex-unlock(&mut);
+ 8          up(&full);
+ 9      }
+ 10 }
+ 11 void consumer() {
+ 12     while(TRUE){
+ 13         down(&full);
+ 14         mutex-lock(&mut); item = remove_item(); mutex-unlock(&mut);
+ 15         up(&empty); consume_item(item);
+ 16     }
+ 17 }
+```
+
+1. Order of Semaphore and Mutex Locks:
+    - In the *producer*, the `mutex-lock` is acquired before `down(&empty)`. This could lead to inefficient locking:
+        - The mutex is held even while the producer is waiting for an empty slot, potentially delaying the consumer unnecessarily.
+    - A better approach would be:
+        
+        ```C
+        down(&empty); // Wait for an empty slot
+        mutex-lock(&mut) // Lock buffer access
+        ```
+2. Correctness of `up()` Calls:
+    - Both the producer and consumer release the semaphore (`up(&full)` and `up(&empty)`) **after unlocking the mutex**. This is correct because the mutex must protect access to the shared resoure while the semaphore is updated.
+3. Starvation:
+    - While unlikely in this simple setup, if there are multiple producers or cosumers, starvation could occur if one type of thread dominates CPU time or semaphore access.
+
+#### Analysis of the Previous Code
+1. Behavior of the Producer When the Buffer is Full
+    - What Happens:
+        - When the buffer is full (`empty == 0`), the producer will block at the `down(&empty)` operation.
+        - This ensures the producer cannot produce more items until the consumer removes an items and signals (`up(&empty)`), making space in the buffer.
+    - Result:
+        - The producer will stop producing temporarily but will not waste CPU cycles due to the semaphore mechanism (no busy waiting).
+
+2. Behavior of the Consumer When the buffer is Empty
+    - What Happens:
+        - When the buffer is empty (`full == 0`), the consumer will block at the `down(&full)` operation.
+        - This ensures the consumer cannot consume items until the producer produces one and signals (`up(&full)`), adding an item to the buffer.
+    - Result:
+        - The consumer will stop consuming temporarily and will be effectively blocked, waiting for new items.
+
+3. Final Result for This Program
+    - The program works **as expected** in terms of correctness:
+        - Mutual exclusion is ensured by the mutex (`mut`) for the shared buffer.
+        - Buffer overflows and underflows are prevented using the `empty` and `full` semaphores.
+        - Producers and consumers synchronize properly through semaphore signaling.
+    - Potential Inefficiencies:
+        - If the mutex is locked **before** waiting on the semaphore (as in the original code), it causes unnecessary locking, potentially delaying the other thread.
+
+4. How to Fix it?
+    - Change the Order of Operations:
+        - Move the `down(&empty)` (or `down(&full)` for the consumer) **before** locking the mutex. This ensures that the mutex is not locked unnecessarily while the thread waits for a semaphore.
+
+### Monitors
+**Monitors** are an attempt to merge synchronization with OOP.  
+
+- Basic idea behind monitors:
+    - Programming concept that must be known by the compiler.
+    - The mutual exclusion is not handled by the programmer.
+    - Locking occurs automatically.
+    - Only one process can be active within a monitor at a time.
+    - A monitor can be seen as a "special type of class"
+    - Process can be blocked and awaken based on condition variables and `wait` and `signal` functions.
