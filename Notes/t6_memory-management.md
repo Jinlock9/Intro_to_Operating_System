@@ -254,8 +254,70 @@ Onto which set should the page replacement algorithm be applied:
 
 *Which approach is best?*
 
+#### Local Allocation
+Each process is allocated a fixed number of page frames, and the page replacement algorithm operates only within those frames.
 
+- Advantages:
+    - Isolation: A process cannot negatively impact others by monopolizing page frames. This isolation prevents a single poorly-behaved process from degrading the entire system.
+    - Predictability: The performance of each process is more predictable since the number of page frames allocated remains constant.
+    - Simpler Debugging: Performance issues are easier to trace because they are confined to individual processes.
+- Disadvantages:
+    - Inefficient Memory Utilization: Some processes may not fully utilize their allocated frames, while others may suffer from insufficient allocation.
+    - Difficult Allocation Decisions: Determining the right number of frames for each process is non-trivial and may lead to under- or over-provisioning.
 
+#### Global Allocation
+Page frames are allocated dynamically across all processes. The page replacement algorithm operates over the entire memory space, reallocating frames as needed.
 
+- Advantages:
+    - Efficient Use of Memory: Idle processes release frames for use by active ones, leading to better overall memory utilization.
+    - Improved Performance: Active processes can dynamically acquire more frames to meet their needs, reducing the likelihood of page faults.
+    - Flexibility: The system can adapt to changing workloads without manual intervention.
+- Disadvantages:
+    - Process Interference: A process with high memory demand can starve others, leading to thrashing and performance degradation.
+    - Unpredictability: Performance is harder to guarantee because a process's page frame allocation can vary widely over time.
+    - Complexity: Managing and monitoring dynamic allocation adds overhead to the system.
 
+#### Which is Best?
+- **Local Allocation** is better when:
+    - The system needs isolation between processes.
+    - Processes have predictable memory demands.
+    - Stability and fairness are critical.
+- **Global Allocation** is better when:
+    - The system aims for **maximum efficiency** and can tolerate unpredictability.
+    - Workloads vary significantly, with some processes requiring much more memory than others.
+    - There's a need to dynamically balance memory across all processes.
 
+#### Practical Considerations
+- Many modern systems use **global allocation** for efficieny but incorporate fairness mechanisms to prevent starvation (e.g., working set models or proportional allocation).
+- A hybrid approach is possible, where a base set for frames is allocated locally, and additional frames are dynamically allocated globally.
+
+### Page Fault Frequency
+Adjusting the number of pages:
+- Start process with a number of pages proportional to its size.
+- Adjust page allocation based on the page fault frequency
+    - Count number of page fault per second
+    - If larger than *A* then allocate more page frames
+    - If below *B* then free some page frames
+
+![Page Fault Frequency](img/t6_11.png)
+
+### Page Size
+Finding optimal page size given a page frame size:
+- In average, half of the last page is used (internal fragmentation)
+- The smaller the page size, the larger the page table
+
+- Page size *p*, process size *s* bytes, average size for page entry *e* and overhead *o*:  
+    
+    **$o = se/p+p/2$**  
+
+- Differentiate with respect to *p* and equate to 0:  
+
+    **$1/2=se/p^2$**
+
+- Optimal page size:
+
+    **$p = root(2se)$**
+
+- Common page frame sizes:
+
+    **4KB or 8KB**
