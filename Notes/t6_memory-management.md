@@ -321,3 +321,104 @@ Finding optimal page size given a page frame size:
 - Common page frame sizes:
 
     **4KB or 8KB**
+
+
+### Page Sharing 
+#### Decrease memory usage by *sharing pages*:
+- Pages containing the program can be shared.
+- Personal data should not be shared.
+
+![Page Sharing](img/t6_12.png)
+
+#### Several basic problems arise:
+- On a process switch, do not remove all pages if required by another process: would generate many page fault.
+- When a process terminates, do not free all the memory if it is required by another process: would generate a crash
+
+- How to share data in *read-write* mode?
+    - **Copy-on-Write (CoW)**:
+        - Pages are initially shared as **read-only**.
+        - If a process attempts to modify a shared page, the **operating system creates a private copy** of the page for that process.
+        - This ensures that modifications by one process do not affect the other, maintaining data consistency.
+        - Steps:
+            - Mark the shared page as **read-only**
+            - On a write attempt, trigger a **page fault**.
+            - Allocate a new page, copy the contents of the shared page, and assign it to the writing process.
+    - **Memory-Mapped Files**:
+        - Use **memory-mapped files** to map a file into the address space of multiple processes.
+        - The file acts as a shared medium for data, and changes are reflected across all process.
+        - To implement:
+            - Use system calls like `mmap` to map a file into memory.
+            - Ensure file permissions are set appropriately to allow read-write access.
+    - **Shared Memory Segments**:
+        - Explicitly create shared memory regions using APIs such as:
+            - `shmget` (System V shared memory) or `mmap` (POSIX shared memory).
+        - Each process attaches to the shared memory segment and can read/write data.
+        - Synchronization is critical to prevent data races:
+            - Use **semaphores**, **mutexes** or other locking mechanism.
+
+### Importance of paging in the OS
+OS involved in paging related work on *four* occasions:
+
+1. Process Creation:
+    - Determine process size
+    - Create process' page table (allocate and initialize memory)
+    - Initialize swap area
+    - Store information related to the swap area and page table in the process
+
+2. Process Execution:
+    - MMU resets for the new process
+    - Flush the TLB
+    - Make the new process' page table the current one
+
+3. Page Fault:
+    - Read hardware register to determine origin of page fault
+    - Compute which page is needed
+    - Locate the page on the disk
+    - Find an available page frame and replace its content
+    - Read the new page frame
+    - Rewind to the faulting instruction and re-execute it
+
+4. Process Termination:
+    - Release page table entries, pages, and disk space
+    - Beware of any page that could be shared among several processes.
+
+### Page Fault Handling
+#### Process on a page fault:
+1. Trap to the kernel is issued; program counter is saved on the stack; state of current instruction saved on some specific registers.
+2. Assembly code routine started: save general registers and other volatile information.
+3. OS search which page is requested.
+4. Once the page is found: check if the address is valid and if process is allowed to access the page. If not kill the process; otherwise find a free page frame.
+5. If selected frame is dirty: have a context switch (faulting process is suspended) until disk transfer has completed. The page frame is marked as reserved such as not to be used by another process.
+6. When page frame is clean: schedule disk write to swap in the page. In the meantime the faulting process is suspended and other processes can be scheduled.
+7. When receiving a disk interrupt to indicate copy is done: page table is updated and frame is marked as being in a normal state.
+8. Rewind program to the faulting instruction, program counter reset to this value.
+9. Faulting process scheduled.
+10. Assembly code routine starts: reload registers and other volatile information.
+11. Process execution can continue.
+
+### Policy and Mechanism
+Example showing how to dissociate policies from mechanisms:
+- Low level MMU handler: architecture dependent
+- Page fault handler: kernel space
+- External handler: user space
+
+![Policy and mechanism](img/t6_13.png)
+
+### Organizational Issue
+#### *Where should the page replacement algorithm go?*
+- User Space:
+    - Use some mechanism to access the R and M bits
+    - Clean solution
+    - Overhead resulting from crossing user-kernel boundary several times
+    - Modular code, more flexibility
+- Kernel Space:
+    - Fault handler sends all information to external pager (which page was selected for removal)
+    - External pager writes the page to the disk
+    - No overhead, faster
+
+
+
+
+
+
+
