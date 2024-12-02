@@ -417,8 +417,63 @@ Example showing how to dissociate policies from mechanisms:
     - No overhead, faster
 
 
+## Segmentation
+### Paging
+![Paging](img/t6_14.png)
+
+#### Basic paging summary:
+- One dimension
+- Starting address and a limit
+- Example: compiler
+- If many variables, the symbol table expands on source text
+
+### Segmentation
+![Segmentation](img/t6_15.png)
+
+### Address Translation
+#### Handling Segmentation in the OS:
+- Each segment has a number and an offset
+- Segment table: contains the starting physical address of each segment, the *base*, together with its size, the *limit*
+- Segment table base register: points to the segment table
+- Segment table length register: number of segments used in a program
+
+### External fragmentation and compaction
+![img](img/t6_16.png)
+
+### Paging vs. Segmentation
+![img](img/t6_17.png)
+
+## Key Points
+#### 1. What are the two main ways to model memory?
+
+- **Segmentation**: Divides memory into varaible-sized segments, where each segment corresponds to a logical part of the program, such as code, data, or stack.
+
+- **paging**: Divides memory into fixed-sized blocks called pages (in RAM) and frames (in physical memory), mapping them efficiently.
 
 
+#### 2. What is the swap area?
 
+The **swap area** is a space on the disk used to extend the physical memory by storing parts of memory that are not actively used. It allows processes to run even if the physical memory (RAM) is full by temporarily swapping out inactive pages.
+
+#### 3. Cite two main page replacement algorithms
+
+- **Least Recently Used (LRU)**: Replaces the page that has not been used for the longest period.
+- **First-In, First-Out (FIFO)**: Replaces the page that was loaded into memory the earliest.
+
+#### 4. Discuss the differences between paging and segmentation
+
+- **Paging**:
+    - Divides memory into fixed-size pages.
+    - Eliminates external fragmentation but may cause internal fragmentation.
+    - Simplifies memory management as all pages are of equal size.
+- **Segmentation**:
+    - Divides memory into variable-sized segments.
+    - Matches logical program structure (e.g., code, data).
+    - May lead to external fragmentation.
+
+#### 5. Explain external and internal fragmentation
+
+- **External Fragmentation**: Occurs when free memory is available but scattered in small non-contiguous blocks, making it difficult to allocate large contiguous memory chunks.
+- **Internal Fragmentation**: Happens when allocated memory is slightly larger than requested, leaving unused space within allocated blocks.
 
 
