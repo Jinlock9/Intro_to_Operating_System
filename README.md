@@ -6,6 +6,8 @@ Course works of 2024FA **ECE482: Introduction to Operating Systems** course at U
 > In the event that similar course content is assigned going forward, it is the duty of JI students to avoid copying or adjusting these codes, or MD/PDF documents, in adherence to the Honor Code. The repository owner disclaims any liability for the actions of others.
 
 ## Projects
+1. Project 1: `mumsh`
+2. Project 2: `lemondb`
 
 ## Homeworks
 
